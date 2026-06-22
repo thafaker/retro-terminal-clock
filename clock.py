@@ -28,7 +28,7 @@ DEFAULT_CONFIG = {
         "refresh_minutes": 15,
         "max_items_per_feed": 8,
         "max_title_length": 120,
-        "fallback_text": "RSS offline - waiting for feed data.",
+        "fallback_text": "Loading RSS feeds...",
         "feeds": [
             {
                 "name": "Herr Montag Status",
@@ -154,6 +154,28 @@ RSS_FEEDS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rssfe
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OPML_FEEDS_PATH = os.path.join(BASE_DIR, "feeds.opml")
 
+
+SPLASH_LINES = [
+    "██████╗ ███████╗████████╗██████╗  ██████╗",
+    "██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██╔═══██╗",
+    "██████╔╝█████╗     ██║   ██████╔╝██║   ██║",
+    "██╔══██╗██╔══╝     ██║   ██╔══██╗██║   ██║",
+    "██║  ██║███████╗   ██║   ██║  ██║╚██████╔╝",
+    "╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ",
+    "",
+    " ██████╗██╗      ██████╗  ██████╗██╗  ██╗",
+    "██╔════╝██║     ██╔═══██╗██╔════╝██║ ██╔╝",
+    "██║     ██║     ██║   ██║██║     █████╔╝ ",
+    "██║     ██║     ██║   ██║██║     ██╔═██╗ ",
+    "╚██████╗███████╗╚██████╔╝╚██████╗██║  ██╗",
+    " ╚═════╝╚══════╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝",
+]
+
+SPLASH_SUBLINES = [
+    "by Jan Montag",
+    "version 0.6.0",
+    "Now with OPML support",
+]
 
 class TickerState:
     def __init__(self):
@@ -316,6 +338,55 @@ def ensure_config():
         if feeds_from_conf:
             cfg.setdefault("ticker", {})["feeds"] = feeds_from_conf
     return cfg
+
+
+def draw_centered_lines(stdscr, start_y, lines, attr=0):
+    h, w = stdscr.getmaxyx()
+    for i, line in enumerate(lines):
+        y = start_y + i
+        if 0 <= y < h:
+            x = max(0, (w - len(line)) // 2)
+            draw_text(stdscr, y, x, line, attr)
+
+
+
+def draw_splash(stdscr, ticker_state, start_time, duration=5.0):
+    h, w = stdscr.getmaxyx()
+    stdscr.erase()
+
+    curses.start_color()
+    curses.use_default_colors()
+    curses.init_pair(1, curses.COLOR_WHITE, -1)
+    curses.init_pair(3, curses.COLOR_CYAN, -1)
+    curses.init_pair(4, curses.COLOR_BLUE, -1)
+    curses.init_pair(5, curses.COLOR_GREEN, -1)
+
+    color_main = curses.color_pair(1) | curses.A_BOLD
+    color_accent = curses.color_pair(3) | curses.A_BOLD
+    color_shadow = curses.color_pair(4)
+    color_meta = curses.color_pair(5) | curses.A_BOLD
+
+    if h >= 3 and w >= 4:
+        stdscr.box()
+
+    total_height = len(SPLASH_LINES) + 1 + len(SPLASH_SUBLINES)
+    start_y = max(1, (h - total_height) // 2 - 1)
+
+    draw_centered_lines(stdscr, start_y, SPLASH_LINES, color_main)
+    draw_centered_lines(stdscr, start_y + len(SPLASH_LINES) + 1, SPLASH_SUBLINES, color_meta)
+
+    progress = min(1.0, max(0.0, (time.monotonic() - start_time) / duration))
+    bar_width = min(46, max(20, w - 20))
+    filled = int(bar_width * progress)
+    bar = '[' + ('#' * filled).ljust(bar_width) + ']'
+    status = 'Loading feeds in background...'
+    source_hint = 'OPML and rssfeed.conf will be checked automatically'
+
+    draw_text(stdscr, h - 5, max(0, (w - len(status)) // 2), status, color_accent)
+    draw_text(stdscr, h - 4, max(0, (w - len(bar)) // 2), bar, color_shadow | curses.A_BOLD)
+    draw_text(stdscr, h - 3, max(0, (w - len(source_hint)) // 2), source_hint, color_shadow)
+
+    stdscr.refresh()
 
 
 def draw_text(stdscr, y, x, text, attr=0, max_width=None):
@@ -657,6 +728,15 @@ def main(stdscr):
     ticker_state = TickerState()
     shared_state = {"config": cfg, "ticker_state": ticker_state}
     refresh_thread = start_refresh_thread(shared_state)
+
+    splash_start = time.monotonic()
+    splash_duration = 5.0
+    while time.monotonic() - splash_start < splash_duration:
+        draw_splash(stdscr, ticker_state, splash_start, splash_duration)
+        ch = stdscr.getch()
+        if ch in (ord("q"), ord("Q")):
+            return
+        time.sleep(0.05)
 
     while True:
         now = datetime.now()
