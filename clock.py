@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+#####################################
+##You know the day destroy the night#
+##Night divides the day             #
+##Tried to run                      #
+##Tried to hide                     #
+##Break on through to the other side#
+#####################################
+###########################The Doors#
 import curses
 import json
 import locale
@@ -38,6 +46,7 @@ DEFAULT_CONFIG = {
     }
 }
 
+# keine ratatui, just plain zahlen, kein Foo, nur Bar.
 DIGITS = {
     "0": [
         " ██████ ",
@@ -154,7 +163,7 @@ RSS_FEEDS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rssfe
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OPML_FEEDS_PATH = os.path.join(BASE_DIR, "feeds.opml")
 
-
+## Hehe, mal schauen ob das klappt...
 SPLASH_LINES = [
     "██████╗ ███████╗████████╗██████╗  ██████╗",
     "██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██╔═══██╗",
@@ -170,7 +179,7 @@ SPLASH_LINES = [
     "╚██████╗███████╗╚██████╔╝╚██████╗██║  ██╗",
     " ╚═════╝╚══════╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝",
 ]
-
+## wir brauchen noch einen rss feed ladeindikator sonst denkt man es hängt, viele Feeds, long loading.
 SPLASH_SUBLINES = [
     "by Jan Montag",
     "version 0.6.0",
@@ -530,7 +539,7 @@ def display_name_for_feed(feed_cfg):
             pass
     return "Feed"
 
-
+## It would be nice if we could implement my github as rss user agent... let's try
 def fetch_feed(feed_cfg, max_items, max_title_length):
     url = feed_cfg.get("url", "").strip()
     label = display_name_for_feed(feed_cfg)
@@ -632,7 +641,7 @@ def ticker_worker(state):
     ticker_state = state["ticker_state"]
     refresh_ticker(cfg, ticker_state)
 
-
+## ALTER!!!!
 def draw_centered_clock(stdscr, cfg, now, ticker_index, ticker_state):
     h, w = stdscr.getmaxyx()
     stdscr.erase()
@@ -713,7 +722,7 @@ def start_refresh_thread(shared_state):
     worker.start()
     return worker
 
-
+## ALTER!!!!
 def main(stdscr):
     curses.curs_set(0)
     stdscr.nodelay(True)
