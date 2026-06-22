@@ -5,7 +5,7 @@
   "frame": true,
   "title": "RETRO CLOCK",
   "ticker": {
-    "enabled": false,
+    "enabled": true,
     "text": "RSS ticker disabled - add feeds later via config.",
     "speed_cps": 12,
     "padding": "   ***   "

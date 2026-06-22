@@ -150,6 +150,7 @@ DIGITS = {
 }
 
 CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "retro_terminal_clock_config.json")
+RSS_FEEDS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rssfeed.conf")
 
 
 class TickerState:
@@ -189,17 +190,75 @@ def deep_merge(base, override):
     return result
 
 
+def ensure_feed_conf():
+    if os.path.exists(RSS_FEEDS_PATH):
+        return
+    lines = [
+        "# RSS feeds for Retro Terminal Clock",
+        "# Lines starting with # are ignored.",
+        "# One feed block consists of name: and url: lines.",
+        "",
+        "name: Herr Montag Status",
+        "url: https://status.herrmontag.de/rss/",
+        "",
+    ]
+    with open(RSS_FEEDS_PATH, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+
+
+def parse_feed_conf():
+    feeds = []
+    if not os.path.exists(RSS_FEEDS_PATH):
+        return feeds
+
+    current = {}
+    with open(RSS_FEEDS_PATH, "r", encoding="utf-8") as f:
+        for raw_line in f:
+            line = raw_line.strip()
+            if not line or line.startswith("#"):
+                if current.get("name") and current.get("url"):
+                    feeds.append({"name": current["name"], "url": current["url"]})
+                    current = {}
+                continue
+            if ":" not in line:
+                continue
+            key, value = line.split(":", 1)
+            key = key.strip().lower()
+            value = value.strip()
+            if key == "name":
+                if current.get("name") and current.get("url"):
+                    feeds.append({"name": current["name"], "url": current["url"]})
+                    current = {}
+                current["name"] = value
+            elif key == "url":
+                current["url"] = value
+
+    if current.get("name") and current.get("url"):
+        feeds.append({"name": current["name"], "url": current["url"]})
+
+    return feeds
+
+
+
 def ensure_config():
+    ensure_feed_conf()
     if not os.path.exists(CONFIG_PATH):
         with open(CONFIG_PATH, "w", encoding="utf-8") as f:
             json.dump(DEFAULT_CONFIG, f, indent=2, ensure_ascii=False)
-        return DEFAULT_CONFIG
-    try:
-        with open(CONFIG_PATH, "r", encoding="utf-8") as f:
-            user_cfg = json.load(f)
-        return deep_merge(DEFAULT_CONFIG, user_cfg)
-    except Exception:
-        return DEFAULT_CONFIG
+        cfg = DEFAULT_CONFIG
+    else:
+        try:
+            with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+                user_cfg = json.load(f)
+            cfg = deep_merge(DEFAULT_CONFIG, user_cfg)
+        except Exception:
+            cfg = DEFAULT_CONFIG
+
+    feeds_from_conf = parse_feed_conf()
+    if feeds_from_conf:
+        cfg.setdefault("ticker", {})["feeds"] = feeds_from_conf
+    return cfg
 
 
 def draw_text(stdscr, y, x, text, attr=0, max_width=None):
@@ -374,7 +433,30 @@ def fetch_feed(feed_cfg, max_items, max_title_length):
     }
 
 
-def build_ticker_entries(cfg):
+def fit_inline_titles(prefix, titles, width, min_second_title_width=18):
+    usable = max(10, width - len(prefix))
+    clean = [strip_text(t) for t in titles if strip_text(t)]
+    if not clean:
+        return prefix.rstrip()
+
+    if len(clean) >= 2:
+        separator = " | "
+        reserve_for_second = len(separator) + min_second_title_width
+        if usable > reserve_for_second:
+            first_room = usable - reserve_for_second
+            first = limit_text(clean[0], first_room)
+            remaining = usable - len(first) - len(separator)
+            if remaining >= min_second_title_width:
+                second = limit_text(clean[1], remaining)
+                candidate = prefix + first + separator + second
+                if len(candidate) <= width:
+                    return candidate
+
+    first_only = limit_text(clean[0], usable)
+    return prefix + first_only
+
+
+def build_ticker_entries(cfg, display_width=78):
     ticker_cfg = cfg.get("ticker", {})
     feeds = ticker_cfg.get("feeds", [])
     max_items = max(1, int(ticker_cfg.get("max_items_per_feed", 8)))
@@ -390,7 +472,8 @@ def build_ticker_entries(cfg):
             payload = fetch_feed(feed, max_items, max_title_length)
             titles = [title for _, title in payload["items"][:visible_items] if title]
             if titles:
-                entries.append(f"Ticker: {payload['label']}: {' | '.join(titles)}")
+                prefix = f"Ticker: {payload['label']}: "
+                entries.append(fit_inline_titles(prefix, titles, display_width))
         except (urllib.error.URLError, TimeoutError, ET.ParseError, ValueError) as exc:
             errors.append(f"{label}: {exc}")
         except Exception as exc:
@@ -411,7 +494,8 @@ def refresh_ticker(cfg, ticker_state):
     if not ticker_cfg.get("enabled", False):
         ticker_state.set_entries([], fallback, None)
         return
-    entries, error = build_ticker_entries(cfg)
+    display_width = 78 if cfg.get("frame", True) else 80
+    entries, error = build_ticker_entries(cfg, display_width=display_width)
     ticker_state.set_entries(entries, fallback, error)
 
 
