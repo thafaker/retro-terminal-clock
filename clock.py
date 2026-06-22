@@ -314,7 +314,7 @@ def ensure_config():
     else:
         feeds_from_conf = parse_feed_conf()
         if feeds_from_conf:
-        cfg.setdefault("ticker", {})["feeds"] = feeds_from_conf
+            cfg.setdefault("ticker", {})["feeds"] = feeds_from_conf
     return cfg
 
 
