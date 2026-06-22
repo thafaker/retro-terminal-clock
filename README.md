@@ -1,4 +1,4 @@
-# Retro Terminal Clock
+# Jan Montags Retro Terminal Clock
 
 A retro terminal clock in a split-flap / flip-clock style for an **80x25 terminal**, featuring a large clock display and a rotating RSS headline bar at the top.
 
@@ -30,7 +30,8 @@ It should work directly on Linux and macOS. On Windows, `curses` support depends
 
 - `clock.py` - main program
 - `retro_terminal_clock_config.json` - runtime settings
-- `rssfeed.conf` - RSS feed list
+- `rssfeed.conf` - optional simple RSS feed list
+- `feeds.opml` - optional OPML feed import file
 - `README.md` - documentation
 
 ### Run
@@ -67,7 +68,7 @@ Behavior:
 
 ### Configuration
 
-There are **two config files**:
+There are **up to three relevant files**:
 
 #### 1. App settings: `retro_terminal_clock_config.json`
 
@@ -140,6 +141,26 @@ Rules:
   - `url:`
 - feeds are loaded in order and displayed in rotation
 
+#### 3. Optional OPML import: `feeds.opml`
+
+If a file named `feeds.opml` exists in the same directory, the app can import RSS feeds from it automatically.
+
+This is useful for people exporting their subscriptions from tools like FreshRSS or other feed readers.
+
+Behavior:
+
+- OPML support is **optional**
+- if `feeds.opml` is present and contains feed entries, it is used as the feed source
+- the app also looks for files ending in `.opml` or `.opml.xml`, for example exports like `feeds_2026-06-22.opml.xml`
+- if there is no usable OPML file, the app falls back to `rssfeed.conf`
+- this means existing setups keep working exactly as before
+
+Typical OPML entries contain attributes like:
+
+- `xmlUrl`
+- `title`
+- `text`
+
 ### Caching behavior
 
 At the moment, feed entries are cached **in memory only** while the program is running.
@@ -211,7 +232,8 @@ Unter Linux und macOS funktioniert das direkt. Unter Windows ist `curses` je nac
 
 - `clock.py` - Hauptprogramm
 - `retro_terminal_clock_config.json` - Laufzeit-Einstellungen
-- `rssfeed.conf` - RSS-Feed-Liste
+- `rssfeed.conf` - optionale einfache RSS-Feed-Liste
+- `feeds.opml` - optionale OPML-Importdatei fuer Feed-Abos
 - `README.md` - Dokumentation
 
 ### Start
@@ -248,7 +270,7 @@ Verhalten:
 
 ### Konfiguration
 
-Es gibt jetzt **zwei Konfigurationsdateien**:
+Es gibt jetzt **bis zu drei relevante Dateien**:
 
 #### 1. App-Einstellungen: `retro_terminal_clock_config.json`
 
@@ -321,6 +343,25 @@ Regeln:
   - `url:`
 - Feeds werden in dieser Reihenfolge geladen und rotiert angezeigt
 
+#### 3. Optionaler OPML-Import: `feeds.opml`
+
+Wenn im gleichen Verzeichnis eine Datei namens `feeds.opml` liegt, kann die Uhr RSS-Feeds automatisch daraus importieren.
+
+Das ist praktisch fuer Leute, die ihre Abos z. B. aus FreshRSS oder einem anderen Feed-Reader als OPML exportieren.
+
+Verhalten:
+
+- OPML-Unterstuetzung ist **optional**
+- wenn `feeds.opml` vorhanden ist und verwertbare Feed-Eintraege enthaelt, wird diese Datei als Feed-Quelle genutzt
+- wenn keine nutzbare `feeds.opml` vorhanden ist, faellt die Uhr auf `rssfeed.conf` zurueck
+- bestehende Setups funktionieren dadurch weiter wie bisher
+
+Typische OPML-Eintraege enthalten Attribute wie:
+
+- `xmlUrl`
+- `title`
+- `text`
+
 ### Cache-Verhalten
 
 Aktuell werden Feed-Eintraege **nur im Arbeitsspeicher** zwischengespeichert, solange das Programm laeuft.
@@ -359,3 +400,4 @@ Noch offen - MIT waere eine gute Wahl, wenn du das Projekt frei auf GitHub teile
 - optionale Datumsmodi
 - Wecker oder Chime
 - Paketierung als kleines CLI-Tool
+

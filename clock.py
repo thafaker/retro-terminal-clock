@@ -151,6 +151,8 @@ DIGITS = {
 
 CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "retro_terminal_clock_config.json")
 RSS_FEEDS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rssfeed.conf")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+OPML_FEEDS_PATH = os.path.join(BASE_DIR, "feeds.opml")
 
 
 class TickerState:
@@ -241,6 +243,57 @@ def parse_feed_conf():
 
 
 
+def find_opml_file():
+    if os.path.exists(OPML_FEEDS_PATH):
+        return OPML_FEEDS_PATH
+
+    candidates = []
+    try:
+        for name in os.listdir(BASE_DIR):
+            lower = name.lower()
+            if lower.endswith('.opml') or lower.endswith('.opml.xml'):
+                candidates.append(name)
+    except Exception:
+        return None
+
+    if not candidates:
+        return None
+
+    candidates.sort()
+    return os.path.join(BASE_DIR, candidates[0])
+
+
+
+def parse_opml_feeds():
+    feeds = []
+    opml_path = find_opml_file()
+    if not opml_path:
+        return feeds
+
+    try:
+        tree = ET.parse(opml_path)
+        root = tree.getroot()
+    except Exception:
+        return feeds
+
+    for node in root.iter():
+        if local_name(node.tag) != "outline":
+            continue
+        url = (node.attrib.get("xmlUrl") or node.attrib.get("xmlurl") or "").strip()
+        if not url:
+            continue
+        name = (
+            node.attrib.get("title")
+            or node.attrib.get("text")
+            or node.attrib.get("label")
+            or url
+        ).strip()
+        feeds.append({"name": name, "url": url})
+
+    return feeds
+
+
+
 def ensure_config():
     ensure_feed_conf()
     if not os.path.exists(CONFIG_PATH):
@@ -255,8 +308,12 @@ def ensure_config():
         except Exception:
             cfg = DEFAULT_CONFIG
 
-    feeds_from_conf = parse_feed_conf()
-    if feeds_from_conf:
+    feeds_from_opml = parse_opml_feeds()
+    if feeds_from_opml:
+        cfg.setdefault("ticker", {})["feeds"] = feeds_from_opml
+    else:
+        feeds_from_conf = parse_feed_conf()
+        if feeds_from_conf:
         cfg.setdefault("ticker", {})["feeds"] = feeds_from_conf
     return cfg
 
