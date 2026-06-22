@@ -14,7 +14,7 @@ DEFAULT_CONFIG = {
     "show_seconds": True,
     "blink_colon": True,
     "frame": True,
-    "title": "Jan Montag RETRO CLOCK",
+    "title": "RETRO CLOCK",
     "ticker": {
         "enabled": False,
         "text": "RSS ticker disabled - add feeds later via config.",
@@ -255,7 +255,7 @@ def draw_centered_clock(stdscr, cfg, now, tick_offset):
     if cfg.get("frame", True) and h >= 3 and w >= 4:
         stdscr.box()
 
-    title = cfg.get("title", "Jan Montags RETRO CLOCK")
+    title = cfg.get("title", "RETRO CLOCK")
     if cfg.get("frame", True):
         draw_text(stdscr, 0, max(2, (w - len(title)) // 2), f" {title} ", color_title)
     else:
