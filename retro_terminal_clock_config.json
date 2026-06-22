@@ -1,0 +1,13 @@
+{
+  "time_format": "%H:%M:%S",
+  "show_seconds": true,
+  "blink_colon": true,
+  "frame": true,
+  "title": "RETRO CLOCK",
+  "ticker": {
+    "enabled": false,
+    "text": "RSS ticker disabled - add feeds later via config.",
+    "speed_cps": 12,
+    "padding": "   ***   "
+  }
+}

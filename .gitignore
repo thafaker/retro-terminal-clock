@@ -1,0 +1,24 @@
+# Betriebssysteme
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editoren & IDEs
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+
+# Build-Artefakte & Logdateien
+build/
+dist/
+out/
+*.log
+*.sqlite
+
+# Temporäre Dateien
+*.tmp
+*.temp
