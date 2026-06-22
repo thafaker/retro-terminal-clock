@@ -1,6 +1,6 @@
 # Jan Montags Retro Terminal Clock
 
-A retro terminal clock in a split-flap / flip-clock style for an **80x25 terminal**, featuring a large clock display and a rotating RSS headline bar at the top.
+A retro terminal clock in a split-flap / flip-clock style for an **80x25 terminal**, featuring a large clock display and a rotating RSS headline bar at the top. - Now with OPML (FreshRSS) File SUpport. Throw it in your directory and the RSS-Feed will be loaded and displayed.
 
 ## English
 
