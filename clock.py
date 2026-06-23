@@ -47,114 +47,103 @@ DEFAULT_CONFIG = {
 }
 
 # keine ratatui, just plain zahlen, kein Foo, nur Bar.
+# tty-clock-style Ziffern: gleichmaessig breites 6x6-Raster, klare Konturen.
 DIGITS = {
     "0": [
-        " ██████ ",
-        "██    ██",
-        "██    ██",
-        "██    ██",
-        "██    ██",
-        "██    ██",
-        " ██████ ",
+        "██████",
+        "██  ██",
+        "██  ██",
+        "██  ██",
+        "██  ██",
+        "██████",
     ],
     "1": [
-        "   ██   ",
-        " ████   ",
-        "   ██   ",
-        "   ██   ",
-        "   ██   ",
-        "   ██   ",
-        " ██████ ",
+        "   ██ ",
+        "  ███ ",
+        "   ██ ",
+        "   ██ ",
+        "   ██ ",
+        "  ████",
     ],
     "2": [
-        " ██████ ",
-        "██    ██",
-        "      ██",
-        " ██████ ",
-        "██      ",
-        "██      ",
-        "████████",
+        "██████",
+        "    ██",
+        "██████",
+        "██    ",
+        "██    ",
+        "██████",
     ],
     "3": [
-        " ██████ ",
-        "██    ██",
-        "      ██",
-        "  █████ ",
-        "      ██",
-        "██    ██",
-        " ██████ ",
+        "██████",
+        "    ██",
+        "██████",
+        "    ██",
+        "    ██",
+        "██████",
     ],
     "4": [
-        "██   ██ ",
-        "██   ██ ",
-        "██   ██ ",
-        "████████",
-        "     ██ ",
-        "     ██ ",
-        "     ██ ",
+        "██  ██",
+        "██  ██",
+        "██████",
+        "    ██",
+        "    ██",
+        "    ██",
     ],
     "5": [
-        "████████",
-        "██      ",
-        "██      ",
-        "███████ ",
-        "      ██",
-        "██    ██",
-        " ██████ ",
+        "██████",
+        "██    ",
+        "██████",
+        "    ██",
+        "    ██",
+        "██████",
     ],
     "6": [
-        " ██████ ",
-        "██    ██",
-        "██      ",
-        "███████ ",
-        "██    ██",
-        "██    ██",
-        " ██████ ",
+        "██████",
+        "██    ",
+        "██████",
+        "██  ██",
+        "██  ██",
+        "██████",
     ],
     "7": [
-        "████████",
-        "     ██ ",
-        "    ██  ",
-        "   ██   ",
-        "  ██    ",
-        "  ██    ",
-        "  ██    ",
+        "██████",
+        "    ██",
+        "   ██ ",
+        "  ██  ",
+        "  ██  ",
+        "  ██  ",
     ],
     "8": [
-        " ██████ ",
-        "██    ██",
-        "██    ██",
-        " ██████ ",
-        "██    ██",
-        "██    ██",
-        " ██████ ",
+        "██████",
+        "██  ██",
+        "██████",
+        "██  ██",
+        "██  ██",
+        "██████",
     ],
     "9": [
-        " ██████ ",
-        "██    ██",
-        "██    ██",
-        " ███████",
-        "      ██",
-        "██    ██",
-        " ██████ ",
+        "██████",
+        "██  ██",
+        "██████",
+        "    ██",
+        "    ██",
+        "██████",
     ],
     ":": [
-        "   ",
-        " ██",
-        " ██",
-        "   ",
-        " ██",
-        " ██",
-        "   ",
+        "  ",
+        "██",
+        "  ",
+        "  ",
+        "██",
+        "  ",
     ],
     " ": [
-        "   ",
-        "   ",
-        "   ",
-        "   ",
-        "   ",
-        "   ",
-        "   ",
+        "  ",
+        "  ",
+        "  ",
+        "  ",
+        "  ",
+        "  ",
     ]
 }
 
@@ -419,26 +408,38 @@ def draw_text(stdscr, y, x, text, attr=0, max_width=None):
         pass
 
 
-def render_big(text, colon_visible=True):
-    rows = [""] * 7
+def format_german_date(now):
+    months = [
+        "Januar", "Februar", "März", "April", "Mai", "Juni",
+        "Juli", "August", "September", "Oktober", "November", "Dezember",
+    ]
+    return f"{now.day}. {months[now.month - 1]} {now.year}"
+
+
+def render_big(text, colon_visible=True, scale_y=2, scale_x=2, gap=2):
+    # Glyphen sind 6 Zeilen hoch; vertikal und horizontal skaliert,
+    # damit die Uhr ein 80x25-Terminal gut ausfuellt.
+    rows = [""] * (6 * scale_y)
+    spacer = " " * gap
     for ch in text:
         glyph = DIGITS.get(ch, DIGITS[" "])
         if ch == ":" and not colon_visible:
             glyph = DIGITS[" "]
-        for i in range(7):
-            rows[i] += glyph[i] + "  "
+        for i in range(6):
+            scaled = "".join(c * scale_x for c in glyph[i]) + spacer
+            for s in range(scale_y):
+                rows[i * scale_y + s] += scaled
     return rows
 
 
 def draw_split_flap(stdscr, top, left, rows, color_main, color_shadow):
     width = max(len(r) for r in rows)
-    flap_y = top + 3
+    half = len(rows) // 2
     for i, row in enumerate(rows):
         attr = color_main | curses.A_BOLD
-        if i >= 4:
+        if i >= half:
             attr = color_shadow | curses.A_BOLD
         draw_text(stdscr, top + i, left, row, attr, width)
-    draw_text(stdscr, flap_y, left - 1, "-" * (width + 2), color_shadow)
 
 
 def strip_text(value):
@@ -669,7 +670,19 @@ def draw_centered_clock(stdscr, cfg, now, ticker_index, ticker_state):
     if cfg.get("blink_colon", True):
         colon_visible = now.second % 2 == 0
 
-    big_rows = render_big(time_text, colon_visible=colon_visible)
+    # Skalierung an die Terminalbreite anpassen, damit die Uhr 80x25
+    # gut ausfuellt, bei Sekunden aber nicht ueber den Rand laeuft.
+    avail_w = (w - 4) if cfg.get("frame", True) else (w - 1)
+    big_rows = None
+    for scale_x, gap in ((2, 2), (2, 1), (1, 2), (1, 1)):
+        candidate = render_big(time_text, colon_visible=colon_visible,
+                               scale_x=scale_x, gap=gap)
+        if max(len(r) for r in candidate) <= avail_w:
+            big_rows = candidate
+            break
+    if big_rows is None:
+        big_rows = render_big(time_text, colon_visible=colon_visible,
+                              scale_x=1, gap=1)
     big_w = max(len(r) for r in big_rows)
     big_h = len(big_rows)
 
@@ -700,7 +713,7 @@ def draw_centered_clock(stdscr, cfg, now, ticker_index, ticker_state):
 
     draw_split_flap(stdscr, start_y, start_x, big_rows, color_main, color_shadow)
 
-    small = now.strftime("%A, %d %B %Y")
+    small = format_german_date(now)
     small_y = start_y + big_h + 2
     if small_y < h - 1:
         draw_text(stdscr, small_y, max(0, (w - len(small)) // 2), small, color_frame)
