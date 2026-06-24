@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml xmlns:frss="https://freshrss.org/opml" version="2.0">
+  <head>
+    <title>Jannis RSS Feeds</title>
+    <dateCreated>Wed, 24 Jun 2026 11:20:11 +0200</dateCreated>
+  </head>
+  <body>
+    <outline text="Linux &amp; Tech">
+      <outline text="Apfelhammer (bashblog)" type="rss" xmlUrl="https://apfelhammer.de/feed.rss" htmlUrl="https://apfelhammer.de/index.html" description="A Weblog about my PowermacG5 in 2025"/>
+      <outline text="Daring Fireball" type="rss" xmlUrl="https://daringfireball.net/feeds/main" htmlUrl="https://daringfireball.net/" description="By John Gruber"/>
+      <outline text="Fefes Blog" type="rss" xmlUrl="http://blog.fefe.de/rss.xml" htmlUrl="http://blog.fefe.de/" description="Verschwörungen und Obskures aus aller Welt"/>
+      <outline text="Fienix-News" type="rss" xmlUrl="https://fienixppc-news.blogspot.com/feeds/posts/default" htmlUrl="https://fienixppc-news.blogspot.com/"/>
+      <outline text="LinuxNews.de – Newsportal für Freie Software und Open Source" type="rss" xmlUrl="https://linuxnews.de/feed/atom" htmlUrl="https://linuxnews.de/" description="Newsportal für Freie Software und Open Source"/>
+      <outline text="Rene Rebe Medium" type="rss" xmlUrl="https://medium.com/feed/@Re-News" htmlUrl="https://medium.com/@Re-News?source=rss-dd0bacf4b01b------2" description="Stories by Re: News on Medium"/>
+    </outline>
+    <outline text="Music&amp;Lifestyle">
+      <outline text="ZWENTNER.com" type="rss" xmlUrl="https://www.zwentner.com/feed/" htmlUrl="https://www.zwentner.com/" description="Blog für Pop- &amp; Netzkultur"/>
+    </outline>
+    <outline text="Unkategorisiert">
+      <outline text="FH-Erfurt Feed" type="rss" xmlUrl="https://www.fh-erfurt.de/feed.rss" htmlUrl="https://www.fh-erfurt.de/" description="News und Veranstaltungen der Fachhochschule Erfurt"/>
+      <outline text="FreshRSS releases" type="rss" xmlUrl="https://github.com/FreshRSS/FreshRSS/releases.atom" htmlUrl="https://github.com/FreshRSS/FreshRSS/" description="FreshRSS releases @ GitHub"/>
+      <outline text="RiffReporter – die Genossenschaft für freien Journalismus eG" type="rss" xmlUrl="https://riff.media/de/rss" htmlUrl="https://www.riffreporter.de/?utm_source=feed&amp;amp;utm_medium=rss2&amp;amp;utm_campaign=de_rss" description="Die Genossenschaft für freien Journalismus. Freie Journalisten berichten direkt für Sie – über Wissenschaft, Kultur, Umwelt, Tech, Leben und die Welt."/>
+      <outline text="Rivva" type="rss" xmlUrl="https://feeds.feedburner.com/rivva" htmlUrl="https://rivva.de/" description="Rivva.de"/>
+      <outline text="UberBlogr - Neueste Beiträge" type="rss" xmlUrl="https://uberblogr.com/rss" htmlUrl="https://uberblogr.com/" description="Aktuelle Blog-Beiträge der letzten 24 Stunden aus dem UberBlogr Webring" frss:filtersActionRead="inurl:maschas-buch.blogspot.com&#10;blogparade&#10;inurl:mthie.com&#10;inurl:pftnhr.xyz&#10;inurl:rausgerufen.de&#10;inurl:wirres.net&#10;bloggerschnack&#10;inurl:mikrobi.libralop.de&#10;inurl:loggbok.de&#10;inurl:janmontag.de&#10;inurl:herrmontag.de&#10;inurl:clickomania.ch&#10;inurl:weltenwanderer.blog&#10;inurl:minorherba.wordpress.com"/>
+    </outline>
+    <outline text="Webmention">
+      <outline text="Mentions status.herrmontag" type="rss" xmlUrl="https://webmention.io/api/mentions.atom?token=bMIpezitrE4KPpru2Op37A" htmlUrl="https://webmention.io/api/mentions.atom"/>
+      <outline text="Webmention AH" type="rss" xmlUrl="https://webmention.io/api/mentions.atom?token=XdLwrjOhEgsjH8R-zrlc4g" htmlUrl="https://webmention.io/api/mentions.atom"/>
+      <outline text="Webmention HM" type="rss" xmlUrl="https://webmention.io/api/mentions.atom?token=ry-_94aY5HlKbus9XmRZkA" htmlUrl="https://webmention.io/api/mentions.atom"/>
+      <outline text="Webmentions JM" type="rss" xmlUrl="https://webmention.io/api/mentions.atom?token=R1t0lwV5ifvSt1WHx8qPSw" htmlUrl="https://webmention.io/api/mentions.atom"/>
+      <outline text="Webmention TH" type="rss" xmlUrl="https://webmention.io/api/mentions.atom?token=As8zyPlxRkq1kls_kLZIPA" htmlUrl="https://webmention.io/api/mentions.atom"/>
+      <outline text="Webmention WS" type="rss" xmlUrl="https://webmention.io/api/mentions.atom?token=0XP2-KHdO6loJuKUxZoD4g" htmlUrl="https://webmention.io/api/mentions.atom"/>
+    </outline>
+    <outline text="private Blogs">
+      <outline text="bln41.de" type="rss" xmlUrl="https://bln41.de/feed/" htmlUrl="https://bln41.de/" description="Icke in Berlin-Friedenau"/>
+      <outline text="Glumm" type="rss" xmlUrl="https://glumm.wordpress.com/feed/" htmlUrl="https://glumm.wordpress.com/" description="Geplant war Ewigkeit"/>
+      <outline text="Hallo, ich bin Jan und das ist mein Status." type="rss" xmlUrl="https://status.herrmontag.de/rss/" htmlUrl="https://status.wochenstart.com/" description="Hallo, ich bin Jan und das ist mein Status."/>
+      <outline text="HerrMontag.de" type="rss" xmlUrl="https://herrmontag.de/rss/" htmlUrl="https://herrmontag.de/" description="~ .macroblog ~"/>
+      <outline text="horax schreibt hier" type="rss" xmlUrl="https://horax.io/feed/" htmlUrl="https://horax.io/" description="absichtsloses herumliegen | erfüllte leichtigkeit | aufzeichnungen"/>
+      <outline text="JanMontag.de" type="rss" xmlUrl="https://janmontag.de/filtered-feed/rss/" htmlUrl="https://janmontag.de/" description=".microblog"/>
+      <outline text="Live aus dem Rantgebiet" type="rss" xmlUrl="https://rantgebiet.de/index.xml" htmlUrl="https://rantgebiet.de/" description="Live aus dem Rantgebiet"/>
+      <outline text="Loggbok" type="rss" xmlUrl="http://loggbok.de/index.xml" htmlUrl="https://loggbok.de/" description="Recent content on Loggbok"/>
+      <outline text="Mikrobi" type="rss" xmlUrl="https://mikrobi.libralop.de/rss.xml" htmlUrl="https://mikrobi.libralop.de/" description="Ein micro blog über gar nichts. Wir schreiben. Du liest. Oder lässt es."/>
+      <outline text="mthie spaces" type="rss" xmlUrl="https://mthie.com/rss.xml" htmlUrl="https://mthie.com/index.html" description="Recent content on mthie spaces"/>
+      <outline text="pftnhr.xyz" type="rss" xmlUrl="https://pftnhr.xyz/feed/page:feed.xml" htmlUrl="https://pftnhr.xyz/" description="Feed"/>
+      <outline text="Piehnat" type="rss" xmlUrl="https://piehnat.de/feed/" htmlUrl="https://piehnat.de/" description="Ein Blog. Wie früher. Nur heute."/>
+      <outline text="Posts on cgX13" type="rss" xmlUrl="https://blog.cgx13.de/posts/index.xml" htmlUrl="https://blog.cgx13.de/posts/" description="Recent content in Posts on cgX13"/>
+      <outline text="Rausgerufen" type="rss" xmlUrl="https://rausgerufen.de/feed/" htmlUrl="https://rausgerufen.de/" description="Dinge, Kram und sonstiges Zeug"/>
+      <outline text="Vic Mancini on Death Row" type="rss" xmlUrl="https://www.victormancini.de/feeds/posts/default" htmlUrl="https://www.victormancini.de/" description="Der Berliner Schriftsteller Giancarlo Pugliese schreibt über seine unheilbare Krebserkrankung"/>
+      <outline text="wochenstart.com" type="rss" xmlUrl="https://wochenstart.com/feed.php" htmlUrl="https://wochenstart.com/" description="wochenstart.com"/>
+    </outline>
+  </body>
+</opml>

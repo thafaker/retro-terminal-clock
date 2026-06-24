@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#
 #####################################
 ##You know the day destroy the night#
 ##Night divides the day             #
@@ -6,7 +7,8 @@
 ##Tried to hide                     #
 ##Break on through to the other side#
 #####################################
-###########################The Doors#
+#The Doors###########################
+#
 import curses
 import json
 import locale
@@ -46,8 +48,7 @@ DEFAULT_CONFIG = {
     }
 }
 
-# keine ratatui, just plain zahlen, kein Foo, nur Bar.
-# tty-clock-style Ziffern: gleichmaessig breites 6x6-Raster, klare Konturen.
+# keine ratatui, denn wir haben TerminalDrome schon mit Ratatui ist auch hässlich
 DIGITS = {
     "0": [
         "██████",
@@ -160,7 +161,7 @@ SPLASH_LINES = [
     "██╔══██╗██╔══╝     ██║   ██╔══██╗██║   ██║",
     "██║  ██║███████╗   ██║   ██║  ██║╚██████╔╝",
     "╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ",
-    "",
+    "feinste Terminals von Jan",
     " ██████╗██╗      ██████╗  ██████╗██╗  ██╗",
     "██╔════╝██║     ██╔═══██╗██╔════╝██║ ██╔╝",
     "██║     ██║     ██║   ██║██║     █████╔╝ ",
@@ -228,7 +229,7 @@ def ensure_feed_conf():
         f.write("\n".join(lines))
 
 
-
+## Am Arsch die Räuber
 def parse_feed_conf():
     feeds = []
     if not os.path.exists(RSS_FEEDS_PATH):
@@ -409,11 +410,16 @@ def draw_text(stdscr, y, x, text, attr=0, max_width=None):
 
 
 def format_german_date(now):
+    weekdays = [
+        "Montag", "Dienstag", "Mittwoch", "Donnerstag",
+        "Freitag", "Samstag", "Sonntag",
+    ]
     months = [
         "Januar", "Februar", "März", "April", "Mai", "Juni",
         "Juli", "August", "September", "Oktober", "November", "Dezember",
     ]
-    return f"{now.day}. {months[now.month - 1]} {now.year}"
+    weekday = weekdays[now.weekday()]
+    return f"{weekday}, {now.day}. {months[now.month - 1]} {now.year}"
 
 
 def render_big(text, colon_visible=True, scale_y=2, scale_x=2, gap=2):
@@ -440,6 +446,19 @@ def draw_split_flap(stdscr, top, left, rows, color_main, color_shadow):
         if i >= half:
             attr = color_shadow | curses.A_BOLD
         draw_text(stdscr, top + i, left, row, attr, width)
+    # Duenner Klappuhr-Spalt: durchgehende feine Linie auf der Naht zwischen
+    # oberer und unterer Haelfte. Ueber den Ziffernbloecken bleibt sie als
+    # gepunktete Variante sichtbar, dazwischen als feiner Strich.
+    upper = rows[half - 1] if half - 1 >= 0 else ""
+    lower = rows[half] if half < len(rows) else ""
+    seam = []
+    for x in range(width):
+        cu = upper[x] if x < len(upper) else " "
+        cl = lower[x] if x < len(lower) else " "
+        # Auf den Bloecken eine zarte Naht, im Zwischenraum ein feiner Strich.
+        seam.append("╌" if (cu != " " or cl != " ") else "─")
+    draw_text(stdscr, top + half - 1, left, "".join(seam),
+              color_shadow | curses.A_BOLD)
 
 
 def strip_text(value):
@@ -641,6 +660,23 @@ def ticker_worker(state):
     cfg = state["config"]
     ticker_state = state["ticker_state"]
     refresh_ticker(cfg, ticker_state)
+
+# hier definieren die Datumsworscht
+def format_german_date(now):
+    months = ["Januar", "Februar", "März", "April", "Mai", "Juni",
+              "Juli", "August", "September", "Oktober", "November", "Dezember"]
+    weekdays = ["Montag", "Dienstag", "Mittwoch", "Donnerstag",
+                "Freitag", "Samstag", "Sonntag"]
+    try:
+        weekday = now.strftime("%A")
+        month = now.strftime("%B")
+        # Plausibilitaetscheck: kam wirklich was Deutsches raus?
+        if month.lower() not in (m.lower() for m in months):
+            raise ValueError
+    except (ValueError, UnicodeDecodeError):
+        weekday = weekdays[now.weekday()]
+        month = months[now.month - 1]
+    return f"{weekday}, {now.day}. {month} {now.year}"
 
 ## ALTER!!!!
 def draw_centered_clock(stdscr, cfg, now, ticker_index, ticker_state):
