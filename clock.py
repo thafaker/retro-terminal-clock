@@ -161,7 +161,7 @@ SPLASH_LINES = [
     "██╔══██╗██╔══╝     ██║   ██╔══██╗██║   ██║",
     "██║  ██║███████╗   ██║   ██║  ██║╚██████╔╝",
     "╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ",
-    "feinste Terminals von Jan",
+    "Feinste Terminals von Jan Montag",
     " ██████╗██╗      ██████╗  ██████╗██╗  ██╗",
     "██╔════╝██║     ██╔═══██╗██╔════╝██║ ██╔╝",
     "██║     ██║     ██║   ██║██║     █████╔╝ ",
@@ -262,7 +262,7 @@ def parse_feed_conf():
 
     return feeds
 
-
+# so, ma gucken ob wir mit der DEF OPMLs eingeparset kriegen.
 
 def find_opml_file():
     if os.path.exists(OPML_FEEDS_PATH):
