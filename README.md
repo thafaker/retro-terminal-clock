@@ -19,6 +19,8 @@ A retro terminal clock in a split-flap / flip-clock style for an **80x25 termina
 - manual feed refresh while the app is running
 - no external Python dependencies
 
+![](screenshot2.jpg)
+
 ### Requirements
 
 - Python 3.8 or newer
